@@ -4,32 +4,7 @@ This document outlines structural and performance optimization opportunities for
 
 ---
 
-## 1. File Search Polling (`src/service/filesearch.rs`)
-
-### Current Implementation
-When a worker thread finds the directory queue is empty, it sleeps for a short duration to wait for other threads to discover and push more subdirectories:
-```rust
-// filesearch.rs:89-91
-if active.load(Ordering::SeqCst) == 0 {
-    break; 
-}
-thread::sleep(Duration::from_millis(1));
-```
-
-### The Issue
-This is a **spin-polling loop**. It introduces:
-* **Arbitrary Latency**: A thread waits for exactly 1ms even if work becomes available in 5 microseconds.
-* **CPU Overhead**: Threads wake up repeatedly just to check the queue state.
-
-### Suggested Fixes
-1. **Condition Variable (`std::sync::Condvar`)**:
-   Use a `Mutex` along with a `Condvar` to put threads to sleep when the queue is empty. Waking threads instantly using `condvar.notify_all()` or `condvar.notify_one()` when a thread pushes new directories.
-2. **Rayon / Parallel Iterator**:
-   If directory searching is kept, replace custom channel/queue thread management with a parallel filesystem walker library or `rayon`'s work-stealing threadpool for parallel iteration.
-
----
-
-## 2. TUI Coordinate Overflow Control (`src/main.rs`)
+## 1. TUI Coordinate Overflow Control (`src/view/app.rs`)
 
 ### Current Implementation
 Boxes are stacked vertically with increments of height and padding:

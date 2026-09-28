@@ -1,0 +1,41 @@
+# easyfetch configuration file
+# Place this file at ~/.config/easyfetch/config.toml or ./easyfetch.toml
+
+# Refresh interval in seconds (default is 1 second)
+# refresh_interval = 1
+
+[logo]
+# ASCII Art Source:
+# - "auto" (default): Automatically detects current OS/distro
+# - Distro preset name: "arch", "ubuntu", "debian", "fedora", "void", "linux", "macos"
+# - File path: Path to custom ASCII art file (e.g. "~/.config/easyfetch/my_art.txt")
+# source = "auto"
+
+# Display Mode:
+# - "auto" (default): Dynamically adapts between full, compact, or hidden based on terminal size
+# - "full": Always show full ASCII art
+# - "compact": Always show compact ASCII art
+# - "none" or "off": Disable ASCII art entirely
+# mode = "auto"
+
+# Color Palette:
+# Colors assigned to $1, $2, $3... placeholders in ASCII art files.
+# Supported color names:
+#   "black", "red", "green", "yellow", "blue", "magenta" (or "purple"),
+#   "cyan", "white", "grey" (or "gray", "dark_grey"), "light_red", "light_green",
+#   "light_yellow", "light_blue", "light_magenta", "light_cyan"
+#
+# Examples:
+# Arch Linux default:
+# colors = ["cyan", "blue"]
+# Ubuntu default:
+# colors = ["yellow", "red"]
+# Debian default:
+# colors = ["red", "white"]
+# Fedora default:
+# colors = ["blue", "white"]
+# Void Linux default:
+# colors = ["green", "white"]
+#
+# Custom 2-color / multi-color theme:
+colors = ["cyan", "blue"]

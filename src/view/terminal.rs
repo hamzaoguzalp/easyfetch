@@ -1,7 +1,5 @@
 use libc::{termios, tcgetattr, tcsetattr, TCSANOW, STDIN_FILENO, ECHO, ICANON};
 use libc::{poll, pollfd, POLLIN};
-use std::process::Command;
-use std::path::Path;
 use std::io::{self, Read, Write};
 use std::mem;
 use std::time::Duration;
@@ -38,6 +36,33 @@ pub fn disable_raw_mode() -> Result<(), std::io::Error> {
     }
 }
 
+pub fn enter_alternate_screen() -> Result<(), std::io::Error> {
+    print!("\x1b[?1049h\x1b[?25l");
+    io::stdout().flush()
+}
+
+pub fn leave_alternate_screen() -> Result<(), std::io::Error> {
+    print!("\x1b[?25h\x1b[?1049l\x1b[0m");
+    io::stdout().flush()
+}
+
+pub struct TerminalGuard;
+
+impl TerminalGuard {
+    pub fn new() -> Result<Self, std::io::Error> {
+        enable_raw_mode()?;
+        enter_alternate_screen()?;
+        Ok(TerminalGuard)
+    }
+}
+
+impl Drop for TerminalGuard {
+    fn drop(&mut self) {
+        let _ = leave_alternate_screen();
+        let _ = disable_raw_mode();
+    }
+}
+
 pub fn poll_stdin(timeout: Duration) -> Result<bool, std::io::Error> {
     let mut pfd = pollfd {
         fd: STDIN_FILENO,
@@ -60,18 +85,4 @@ pub fn read_stdin_char() -> Result<u8, std::io::Error> {
     let mut buffer = [0; 1];
     io::stdin().read_exact(&mut buffer)?;
     Ok(buffer[0])
-}
-
-pub fn open_in_editor(file_path: &Path) -> Result<(), std::io::Error> {
-    disable_raw_mode()?;
-    print!("\x1b[2J\x1b[H");
-    let _ = io::stdout().flush();
-
-    let editor = std::env::var("EDITOR").unwrap_or_else(|_| "nvim".to_string());
-    let _status = Command::new(editor)
-        .arg(file_path)
-        .status()?;
-        
-    enable_raw_mode()?;
-    Ok(())
 }
