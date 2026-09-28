@@ -27,6 +27,39 @@ impl AppConfig {
     }
 }
 
+pub const DEFAULT_CONFIG: &str = include_str!("../assets/config.example.toml");
+
+pub fn get_default_config_path() -> Option<PathBuf> {
+    if let Ok(xdg) = std::env::var("XDG_CONFIG_HOME") {
+        return Some(PathBuf::from(xdg).join("easyfetch/config.toml"));
+    }
+    if let Ok(home) = std::env::var("HOME") {
+        return Some(PathBuf::from(home).join(".config/easyfetch/config.toml"));
+    }
+    None
+}
+
+pub fn generate_default_config() -> Result<PathBuf, String> {
+    let path = get_default_config_path().ok_or_else(|| {
+        "Could not determine user configuration directory ($HOME or $XDG_CONFIG_HOME is not set)"
+            .to_string()
+    })?;
+
+    if path.exists() {
+        return Err(format!("Config file already exists at {}", path.display()));
+    }
+
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent).map_err(|e| {
+            format!("Failed to create directory {}: {}", parent.display(), e)
+        })?;
+    }
+
+    std::fs::write(&path, DEFAULT_CONFIG)
+        .map_err(|e| format!("Failed to write {}: {}", path.display(), e))?;
+    Ok(path)
+}
+
 pub fn find_config_path() -> Option<PathBuf> {
     // 1. Current working directory: easyfetch.toml
     let local = PathBuf::from("easyfetch.toml");

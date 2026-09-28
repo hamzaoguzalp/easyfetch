@@ -17,10 +17,40 @@ struct Cli {
 
     #[arg(short, long, default_value_t = 1, help = "Refresh interval in seconds")]
     time: u64,
+
+    #[arg(
+        long,
+        help = "Generate default config file in ~/.config/easyfetch/config.toml"
+    )]
+    generate_config: bool,
+
+    #[arg(long, help = "Print default config to stdout")]
+    print_config: bool,
 }
 
 fn main() {
     let cli = Cli::parse();
+
+    if cli.print_config {
+        print!("{}", config::DEFAULT_CONFIG);
+        return;
+    }
+
+    if cli.generate_config {
+        match config::generate_default_config() {
+            Ok(path) => {
+                println!(
+                    "Successfully created default configuration file at: {}",
+                    path.display()
+                );
+            }
+            Err(e) => {
+                eprintln!("Error: {}", e);
+                std::process::exit(1);
+            }
+        }
+        return;
+    }
 
     let mut app = MonitorApp::new(cli.time);
     let mut engine = TuiEngine::new();
