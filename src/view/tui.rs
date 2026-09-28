@@ -401,7 +401,13 @@ pub fn draw_box(buffer: &mut ScreenBuffer, area: Rect, title: &str, items: &[Tui
                 } else {
                     label_style
                 };
-                buffer.put_str(content_x, current_y, &item.label, row_label_style, label_len);
+                buffer.put_str(
+                    content_x,
+                    current_y,
+                    &item.label,
+                    row_label_style,
+                    label_len,
+                );
 
                 let val_x = if is_compact_gauge {
                     bar_x + bar_width + 2
@@ -414,14 +420,7 @@ pub fn draw_box(buffer: &mut ScreenBuffer, area: Rect, title: &str, items: &[Tui
                 if let Some(percentage) = item.progress
                     && bar_width >= 4
                 {
-                    draw_inline_bar(
-                        buffer,
-                        bar_x,
-                        current_y,
-                        bar_width,
-                        percentage,
-                        item.color,
-                    );
+                    draw_inline_bar(buffer, bar_x, current_y, bar_width, percentage, item.color);
                 }
             }
         } else {
@@ -434,13 +433,31 @@ pub fn draw_box(buffer: &mut ScreenBuffer, area: Rect, title: &str, items: &[Tui
             if val_col_x + val_len <= content_x + max_content_width {
                 buffer.put_str(val_col_x, current_y, &item.value, val_style, val_len);
             } else if content_x + label_len + 1 + val_len <= content_x + max_content_width {
-                buffer.put_str(content_x + label_len + 1, current_y, &item.value, val_style, val_len);
+                buffer.put_str(
+                    content_x + label_len + 1,
+                    current_y,
+                    &item.value,
+                    val_style,
+                    val_len,
+                );
             } else {
                 let allowed = max_content_width.saturating_sub(label_len + 4);
                 if allowed > 0 {
                     let truncated: String = item.value.chars().take(allowed).collect();
-                    buffer.put_str(content_x + label_len + 1, current_y, &truncated, val_style, allowed);
-                    buffer.put_str(content_x + label_len + 1 + allowed, current_y, "...", val_style, 3);
+                    buffer.put_str(
+                        content_x + label_len + 1,
+                        current_y,
+                        &truncated,
+                        val_style,
+                        allowed,
+                    );
+                    buffer.put_str(
+                        content_x + label_len + 1 + allowed,
+                        current_y,
+                        "...",
+                        val_style,
+                        3,
+                    );
                 }
             }
         }
@@ -530,10 +547,14 @@ mod tests {
     fn test_draw_box_progress_bar_expansion() {
         let mut buf = ScreenBuffer::new(60, 10);
         let items = vec![
-            TuiRow::new("RAM".to_string(), "4.0 GB (27%)".to_string(), Status::Normal).with_progress(27.0),
+            TuiRow::new(
+                "RAM".to_string(),
+                "4.0 GB (27%)".to_string(),
+                Status::Normal,
+            )
+            .with_progress(27.0),
         ];
         draw_box(&mut buf, Rect::new(0, 0, 60, 6), "Memory", &items);
         assert_eq!(buf.cells[0].ch, '╭');
     }
 }
-

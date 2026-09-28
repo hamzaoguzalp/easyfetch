@@ -120,7 +120,11 @@ impl SystemMonitor for SystemInfo {
             if let Some(value) = data {
                 MetricRow::new(label.to_string(), value.to_string(), MetricLevel::Ok)
             } else {
-                MetricRow::new(label.to_string(), "Unknown".to_string(), MetricLevel::Unknown)
+                MetricRow::new(
+                    label.to_string(),
+                    "Unknown".to_string(),
+                    MetricLevel::Unknown,
+                )
             }
         };
         vec![
@@ -138,7 +142,12 @@ impl SystemMonitor for SystemInfo {
     }
 }
 
-fn read_system_info() -> (Option<String>, Option<String>, Option<String>, Option<String>) {
+fn read_system_info() -> (
+    Option<String>,
+    Option<String>,
+    Option<String>,
+    Option<String>,
+) {
     let mut system_name = None;
     let mut os_version = None;
 
@@ -361,7 +370,9 @@ impl SystemMonitor for ComponentInfo {
                             MetricLevel::Ok
                         };
                         let pct = temp.clamp(0.0, 100.0);
-                        rows.push(MetricRow::new(friendly, temperature_text, level).with_progress(pct));
+                        rows.push(
+                            MetricRow::new(friendly, temperature_text, level).with_progress(pct),
+                        );
                     }
                 }
             }
@@ -742,9 +753,15 @@ mod tests {
     #[test]
     fn test_friendly_sensor_names() {
         assert_eq!(format_friendly_sensor_name("k10temp Tctl"), "CPU (Tctl)");
-        assert_eq!(format_friendly_sensor_name("coretemp Package id 0"), "CPU (Package)");
+        assert_eq!(
+            format_friendly_sensor_name("coretemp Package id 0"),
+            "CPU (Package)"
+        );
         assert_eq!(format_friendly_sensor_name("amdgpu edge"), "GPU (Edge)");
-        assert_eq!(format_friendly_sensor_name("nvme Composite WD PC SN810 SDCPNRY-1T00-1006"), "NVMe (Composite)");
+        assert_eq!(
+            format_friendly_sensor_name("nvme Composite WD PC SN810 SDCPNRY-1T00-1006"),
+            "NVMe (Composite)"
+        );
         assert_eq!(format_friendly_sensor_name("mt7921_phy0 temp1"), "Wi-Fi");
         assert_eq!(format_friendly_sensor_name("spd5118 temp1"), "Memory SPD 1");
         assert_eq!(format_friendly_sensor_name("acpitz temp1"), "Motherboard 1");

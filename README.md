@@ -70,12 +70,12 @@ easyfetch
 easyfetch [OPTIONS]
 
 Options:
-  -s, --system        Run system monitor dashboard
-  -t, --time <TIME>   Refresh interval in seconds [default: 1]
-      --gen-config    Generate default config file in ~/.config/easyfetch/config.toml
-      --print-config  Print default config to stdout
-  -h, --help          Print help
-  -V, --version       Print version
+  -s, --system            Run system monitor dashboard
+  -t, --time <TIME>       Refresh interval in seconds [default: 1]
+      --generate-config   Generate default config file in ~/.config/easyfetch/config.toml
+      --print-config      Print default config to stdout
+  -h, --help              Print help
+  -V, --version           Print version
 ```
 
 ---
@@ -91,7 +91,7 @@ Options:
 To quickly generate a default configuration file with full documentation and comments:
 
 ```bash
-easyfetch --gen-config
+easyfetch --generate-config
 ```
 
 Or view/pipe the default template:

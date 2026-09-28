@@ -50,9 +50,8 @@ pub fn generate_default_config() -> Result<PathBuf, String> {
     }
 
     if let Some(parent) = path.parent() {
-        std::fs::create_dir_all(parent).map_err(|e| {
-            format!("Failed to create directory {}: {}", parent.display(), e)
-        })?;
+        std::fs::create_dir_all(parent)
+            .map_err(|e| format!("Failed to create directory {}: {}", parent.display(), e))?;
     }
 
     std::fs::write(&path, DEFAULT_CONFIG)
@@ -115,7 +114,10 @@ colors = ["blue", "white"]
         let logo = config.logo.unwrap();
         assert_eq!(logo.source.as_deref(), Some("fedora"));
         assert_eq!(logo.mode.as_deref(), Some("compact"));
-        assert_eq!(logo.colors, Some(vec!["blue".to_string(), "white".to_string()]));
+        assert_eq!(
+            logo.colors,
+            Some(vec!["blue".to_string(), "white".to_string()])
+        );
     }
 
     #[test]
@@ -124,4 +126,3 @@ colors = ["blue", "white"]
         assert_eq!(p, PathBuf::from("/etc/hosts"));
     }
 }
-

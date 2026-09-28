@@ -1,5 +1,5 @@
-use libc::{termios, tcgetattr, tcsetattr, TCSANOW, STDIN_FILENO, ECHO, ICANON};
-use libc::{poll, pollfd, POLLIN};
+use libc::{ECHO, ICANON, STDIN_FILENO, TCSANOW, tcgetattr, tcsetattr, termios};
+use libc::{POLLIN, poll, pollfd};
 use std::io::{self, Read, Write};
 use std::mem;
 use std::time::Duration;

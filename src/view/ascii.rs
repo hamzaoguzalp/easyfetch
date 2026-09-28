@@ -10,25 +10,32 @@ macro_rules! load_ascii {
 }
 
 static ARCH_ASCII: LazyLock<Vec<&'static str>> = load_ascii!("../../assets/ascii/arch.txt");
-static ARCH_ASCII_COMPACT: LazyLock<Vec<&'static str>> = load_ascii!("../../assets/ascii/arch_compact.txt");
+static ARCH_ASCII_COMPACT: LazyLock<Vec<&'static str>> =
+    load_ascii!("../../assets/ascii/arch_compact.txt");
 
 static UBUNTU_ASCII: LazyLock<Vec<&'static str>> = load_ascii!("../../assets/ascii/ubuntu.txt");
-static UBUNTU_ASCII_COMPACT: LazyLock<Vec<&'static str>> = load_ascii!("../../assets/ascii/ubuntu_compact.txt");
+static UBUNTU_ASCII_COMPACT: LazyLock<Vec<&'static str>> =
+    load_ascii!("../../assets/ascii/ubuntu_compact.txt");
 
 static DEBIAN_ASCII: LazyLock<Vec<&'static str>> = load_ascii!("../../assets/ascii/debian.txt");
-static DEBIAN_ASCII_COMPACT: LazyLock<Vec<&'static str>> = load_ascii!("../../assets/ascii/debian_compact.txt");
+static DEBIAN_ASCII_COMPACT: LazyLock<Vec<&'static str>> =
+    load_ascii!("../../assets/ascii/debian_compact.txt");
 
 static FEDORA_ASCII: LazyLock<Vec<&'static str>> = load_ascii!("../../assets/ascii/fedora.txt");
-static FEDORA_ASCII_COMPACT: LazyLock<Vec<&'static str>> = load_ascii!("../../assets/ascii/fedora_compact.txt");
+static FEDORA_ASCII_COMPACT: LazyLock<Vec<&'static str>> =
+    load_ascii!("../../assets/ascii/fedora_compact.txt");
 
 static VOID_ASCII: LazyLock<Vec<&'static str>> = load_ascii!("../../assets/ascii/void.txt");
-static VOID_ASCII_COMPACT: LazyLock<Vec<&'static str>> = load_ascii!("../../assets/ascii/void_compact.txt");
+static VOID_ASCII_COMPACT: LazyLock<Vec<&'static str>> =
+    load_ascii!("../../assets/ascii/void_compact.txt");
 
 static LINUX_ASCII: LazyLock<Vec<&'static str>> = load_ascii!("../../assets/ascii/linux.txt");
-static LINUX_ASCII_COMPACT: LazyLock<Vec<&'static str>> = load_ascii!("../../assets/ascii/linux_compact.txt");
+static LINUX_ASCII_COMPACT: LazyLock<Vec<&'static str>> =
+    load_ascii!("../../assets/ascii/linux_compact.txt");
 
 static MACOS_ASCII: LazyLock<Vec<&'static str>> = load_ascii!("../../assets/ascii/macos.txt");
-static MACOS_ASCII_COMPACT: LazyLock<Vec<&'static str>> = load_ascii!("../../assets/ascii/macos_compact.txt");
+static MACOS_ASCII_COMPACT: LazyLock<Vec<&'static str>> =
+    load_ascii!("../../assets/ascii/macos_compact.txt");
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum AsciiMode {
@@ -44,11 +51,7 @@ pub struct ResolvedAscii {
     pub mode: AsciiMode,
 }
 
-pub fn resolve_ascii(
-    config: &AppConfig,
-    is_wide: bool,
-    term_height: usize,
-) -> ResolvedAscii {
+pub fn resolve_ascii(config: &AppConfig, is_wide: bool, term_height: usize) -> ResolvedAscii {
     // 1. Resolve Mode
     let mode = if let Some(m_str) = config.logo.as_ref().and_then(|l| l.mode.as_ref()) {
         match m_str.trim().to_lowercase().as_str() {
@@ -95,21 +98,64 @@ pub fn resolve_ascii(
         detect_distro_id()
     };
 
-    let (distro_key, title, default_palette, full_built, compact_built) = if os_name.contains("arch") {
-        ("arch", "  Arch Linux ", vec![Color::Cyan, Color::Blue], &ARCH_ASCII[..], &ARCH_ASCII_COMPACT[..])
-    } else if os_name.contains("ubuntu") {
-        ("ubuntu", "  Ubuntu ", vec![Color::Yellow, Color::Red], &UBUNTU_ASCII[..], &UBUNTU_ASCII_COMPACT[..])
-    } else if os_name.contains("debian") {
-        ("debian", "  Debian ", vec![Color::Red, Color::White], &DEBIAN_ASCII[..], &DEBIAN_ASCII_COMPACT[..])
-    } else if os_name.contains("fedora") {
-        ("fedora", "  Fedora ", vec![Color::Blue, Color::White], &FEDORA_ASCII[..], &FEDORA_ASCII_COMPACT[..])
-    } else if os_name.contains("void") {
-        ("void", "  Void Linux ", vec![Color::Green, Color::White], &VOID_ASCII[..], &VOID_ASCII_COMPACT[..])
-    } else if os_name.contains("darwin") || os_name.contains("mac") {
-        ("macos", "  macOS ", vec![Color::White, Color::DarkGrey], &MACOS_ASCII[..], &MACOS_ASCII_COMPACT[..])
-    } else {
-        ("linux", " 󰌽 Linux ", vec![Color::Cyan, Color::Yellow, Color::White], &LINUX_ASCII[..], &LINUX_ASCII_COMPACT[..])
-    };
+    let (distro_key, title, default_palette, full_built, compact_built) =
+        if os_name.contains("arch") {
+            (
+                "arch",
+                "  Arch Linux ",
+                vec![Color::Cyan, Color::Blue],
+                &ARCH_ASCII[..],
+                &ARCH_ASCII_COMPACT[..],
+            )
+        } else if os_name.contains("ubuntu") {
+            (
+                "ubuntu",
+                "  Ubuntu ",
+                vec![Color::Yellow, Color::Red],
+                &UBUNTU_ASCII[..],
+                &UBUNTU_ASCII_COMPACT[..],
+            )
+        } else if os_name.contains("debian") {
+            (
+                "debian",
+                "  Debian ",
+                vec![Color::Red, Color::White],
+                &DEBIAN_ASCII[..],
+                &DEBIAN_ASCII_COMPACT[..],
+            )
+        } else if os_name.contains("fedora") {
+            (
+                "fedora",
+                "  Fedora ",
+                vec![Color::Blue, Color::White],
+                &FEDORA_ASCII[..],
+                &FEDORA_ASCII_COMPACT[..],
+            )
+        } else if os_name.contains("void") {
+            (
+                "void",
+                "  Void Linux ",
+                vec![Color::Green, Color::White],
+                &VOID_ASCII[..],
+                &VOID_ASCII_COMPACT[..],
+            )
+        } else if os_name.contains("darwin") || os_name.contains("mac") {
+            (
+                "macos",
+                "  macOS ",
+                vec![Color::White, Color::DarkGrey],
+                &MACOS_ASCII[..],
+                &MACOS_ASCII_COMPACT[..],
+            )
+        } else {
+            (
+                "linux",
+                " 󰌽 Linux ",
+                vec![Color::Cyan, Color::Yellow, Color::White],
+                &LINUX_ASCII[..],
+                &LINUX_ASCII_COMPACT[..],
+            )
+        };
 
     let palette = resolve_palette(config, &default_palette);
 
@@ -122,7 +168,9 @@ pub fn resolve_ascii(
             } else {
                 format!("{}.txt", distro_key)
             };
-            let user_file = PathBuf::from(home).join(".config/easyfetch/ascii").join(file_name);
+            let user_file = PathBuf::from(home)
+                .join(".config/easyfetch/ascii")
+                .join(file_name);
             if let Ok(content) = std::fs::read_to_string(user_file) {
                 let lines: Vec<String> = content.lines().map(String::from).collect();
                 return ResolvedAscii {
@@ -396,7 +444,11 @@ pub fn draw_sys_ascii_box(
     let has_art = !lines.is_empty() && inner_width > max_art_w + 24;
 
     let art_x = start_x + 3;
-    let sys_start_x = if has_art { art_x + max_art_w + 3 } else { start_x + 2 };
+    let sys_start_x = if has_art {
+        art_x + max_art_w + 3
+    } else {
+        start_x + 2
+    };
     let sys_width = (start_x + area.width - 2).saturating_sub(sys_start_x);
 
     let num_rows = sys_rows.len().max(if has_art { lines.len() } else { 0 });
@@ -439,14 +491,32 @@ pub fn draw_sys_ascii_box(
                 buffer.put_str(val_col_x, current_y, &row.value, val_style, val_len);
             } else if label_len + 1 + val_len <= sys_width {
                 buffer.put_str(sys_start_x, current_y, &row.label, label_style, label_len);
-                buffer.put_str(sys_start_x + label_len + 1, current_y, &row.value, val_style, val_len);
+                buffer.put_str(
+                    sys_start_x + label_len + 1,
+                    current_y,
+                    &row.value,
+                    val_style,
+                    val_len,
+                );
             } else {
                 buffer.put_str(sys_start_x, current_y, &row.label, label_style, label_len);
                 let allowed = sys_width.saturating_sub(label_len + 4);
                 if allowed > 0 {
                     let truncated: String = row.value.chars().take(allowed).collect();
-                    buffer.put_str(sys_start_x + label_len + 1, current_y, &truncated, val_style, allowed);
-                    buffer.put_str(sys_start_x + label_len + 1 + allowed, current_y, "...", val_style, 3);
+                    buffer.put_str(
+                        sys_start_x + label_len + 1,
+                        current_y,
+                        &truncated,
+                        val_style,
+                        allowed,
+                    );
+                    buffer.put_str(
+                        sys_start_x + label_len + 1 + allowed,
+                        current_y,
+                        "...",
+                        val_style,
+                        3,
+                    );
                 }
             }
         }
@@ -475,4 +545,3 @@ mod tests {
         assert_eq!(visible_art_len("Hello $1World$2!"), 12);
     }
 }
-

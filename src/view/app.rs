@@ -2,9 +2,7 @@ use crate::config::key;
 use crate::system::systemmonitor::{
     MetricLevel, MetricRow, MonitorType, fetch_all_data, initalize_monitors, update_monitors,
 };
-use crate::view::ascii::{
-    AsciiMode, draw_ascii_box, draw_sys_ascii_box, resolve_ascii,
-};
+use crate::view::ascii::{AsciiMode, draw_ascii_box, draw_sys_ascii_box, resolve_ascii};
 use crate::view::tui::{Color, Rect, ScreenBuffer, Status, TuiRow, draw_box};
 use std::time::{Duration, Instant};
 
@@ -97,13 +95,8 @@ impl TuiApp for MonitorApp {
             let left_start_y = if ascii_mode != AsciiMode::None {
                 let ascii_h = needed_ascii_h.min(max_y.saturating_sub(work_area.y));
                 let ascii_rect = Rect::new(work_area.x, work_area.y, left_width, ascii_h);
-                let bottom_ascii_y = draw_ascii_box(
-                    buffer,
-                    ascii_rect,
-                    ascii_title,
-                    ascii_lines,
-                    ascii_palette,
-                );
+                let bottom_ascii_y =
+                    draw_ascii_box(buffer, ascii_rect, ascii_title, ascii_lines, ascii_palette);
                 bottom_ascii_y + gap
             } else {
                 work_area.y
@@ -185,13 +178,8 @@ impl TuiApp for MonitorApp {
             let next_y = if ascii_mode == AsciiMode::Full {
                 let ascii_h = needed_ascii_h.min(max_y.saturating_sub(work_area.y));
                 let ascii_rect = Rect::new(work_area.x, work_area.y, work_area.width, ascii_h);
-                let bottom_ascii_y = draw_ascii_box(
-                    buffer,
-                    ascii_rect,
-                    ascii_title,
-                    ascii_lines,
-                    ascii_palette,
-                );
+                let bottom_ascii_y =
+                    draw_ascii_box(buffer, ascii_rect, ascii_title, ascii_lines, ascii_palette);
                 let mut cur = bottom_ascii_y + 1;
                 if let Some(sys) = sys_item {
                     let sys_h = compute_needed_height(&sys.1).min(max_y.saturating_sub(cur));
@@ -206,8 +194,8 @@ impl TuiApp for MonitorApp {
                     .as_ref()
                     .map(|s| convert_to_tui_rows(&s.1))
                     .unwrap_or_default();
-                let needed_h = (ascii_lines.len().max(rows.len()) + 2)
-                    .min(max_y.saturating_sub(work_area.y));
+                let needed_h =
+                    (ascii_lines.len().max(rows.len()) + 2).min(max_y.saturating_sub(work_area.y));
                 let box_rect = Rect::new(work_area.x, work_area.y, work_area.width, needed_h);
                 let bottom_y = draw_sys_ascii_box(
                     buffer,
@@ -225,7 +213,12 @@ impl TuiApp for MonitorApp {
                     let sys_h = compute_needed_height(&sys.1).min(max_y.saturating_sub(cur));
                     let sys_rect = Rect::new(work_area.x, cur, work_area.width, sys_h);
                     let rows = convert_to_tui_rows(&sys.1);
-                    cur = draw_box(buffer, sys_rect, &format!("{}── {}", ascii_title, sys.0.trim()), &rows) + 1;
+                    cur = draw_box(
+                        buffer,
+                        sys_rect,
+                        &format!("{}── {}", ascii_title, sys.0.trim()),
+                        &rows,
+                    ) + 1;
                 }
                 cur
             };
